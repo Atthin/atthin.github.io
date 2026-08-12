@@ -432,8 +432,11 @@ ul { margin: 0; padding: 0; list-style: none; }
 .hlink-btn[data-copied] .ico-check { opacity: 1; }
 
 /* "Email" -> "Copied". Both labels sit in one grid cell so the container is as wide
-   as the longer word and the link row never shifts when they swap. */
-.hlink-swap { display: inline-grid; }
+   as the longer word and the link row never shifts when they swap.
+   line-height must be restated: as a grid container this box otherwise sized itself
+   to the font's normal line height (19px, not 25.5px), which lifted the label 3px
+   above the neighbouring links and shrank the button. */
+.hlink-swap { display: inline-grid; line-height: 1.7; }
 .hlink-swap > span { grid-area: 1 / 1; text-align: left; }
 .hlink-swap .lbl-done { opacity: 0; }
 .hlink-btn[data-copied] .lbl-idle { opacity: 0; }
