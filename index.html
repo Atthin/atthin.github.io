@@ -138,6 +138,7 @@
         <li>
           <button class="hlink hlink-btn" id="copy-email" type="button"
                   data-email="chand158@purdue.edu"
+                  title="Copy chand158@purdue.edu to the clipboard"
                   aria-label="Copy email address chand158@purdue.edu to clipboard">
             <span class="hlink-ico">
               <svg class="ico-mail" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -148,7 +149,12 @@
                 <path d="M4.5 12.5l4.8 4.8L19.5 7"/>
               </svg>
             </span>
-            <span class="hlink-label">Email</span>
+            <!-- Both labels occupy the same grid cell, so the row never reflows when
+                 the text swaps. An icon-only change was too quiet to read as feedback. -->
+            <span class="hlink-label hlink-swap">
+              <span class="lbl-idle">Email</span>
+              <span class="lbl-done" aria-hidden="true">Copied</span>
+            </span>
           </button>
         </li>
         <li>

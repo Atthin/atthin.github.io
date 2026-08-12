@@ -431,6 +431,14 @@ ul { margin: 0; padding: 0; list-style: none; }
 .hlink-btn[data-copied] .ico-mail { opacity: 0; }
 .hlink-btn[data-copied] .ico-check { opacity: 1; }
 
+/* "Email" -> "Copied". Both labels sit in one grid cell so the container is as wide
+   as the longer word and the link row never shifts when they swap. */
+.hlink-swap { display: inline-grid; }
+.hlink-swap > span { grid-area: 1 / 1; text-align: left; }
+.hlink-swap .lbl-done { opacity: 0; }
+.hlink-btn[data-copied] .lbl-idle { opacity: 0; }
+.hlink-btn[data-copied] .lbl-done { opacity: 1; color: var(--accent); }
+
 /* animated underline lives on a pseudo-element so it never affects layout */
 .hlink::after, .ilink::after, .nav-list a::after {
   content: '';
@@ -776,7 +784,8 @@ ul { margin: 0; padding: 0; list-style: none; }
   .row:hover, .stint:hover { transform: translateY(-2px); border-color: var(--muted); }
   .lon:hover { transform: translateY(-2px); border-color: var(--muted); }
 
-  /* 6. copy-email icon morph */
+  /* 6. copy-email icon morph + label swap */
+  .hlink-swap > span { transition: opacity 200ms var(--ease); }
   .hlink-ico svg { transition: opacity 200ms var(--ease), transform 200ms var(--ease); }
   .hlink-btn[data-copied] .ico-mail { transform: scale(0.6); }
   .hlink-ico .ico-check { transform: scale(0.6); }
