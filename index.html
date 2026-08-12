@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Atthin Chandrashekar · PhD Student, Computer Architecture, Purdue University</title>
+<meta name="description" content="PhD student in Electrical &amp; Computer Engineering at Purdue University, advised by Mithuna Thottethodi and T. N. Vijaykumar. Computer architecture: hardware accelerators, interconnection networks, and ML systems.">
+<link rel="canonical" href="https://atthin.github.io/">
+<meta name="theme-color" content="#FBFAF8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101110" media="(prefers-color-scheme: dark)">
+
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="Atthin Chandrashekar">
+<meta property="og:title" content="Atthin Chandrashekar · PhD Student, Computer Architecture, Purdue University">
+<meta property="og:description" content="Computer architecture at Purdue: hardware accelerators, interconnection networks, and the tooling used to evaluate architectural ideas.">
+<meta property="og:url" content="https://atthin.github.io/">
+<meta property="profile:first_name" content="Atthin">
+<meta property="profile:last_name" content="Chandrashekar">
+<!-- TODO #8 (OPEN QUESTION): no og:image / twitter:image tag is emitted because no
+     share image exists yet. A tag pointing at a non-existent file is worse than none
+     (it produces a broken preview card). Supply a 1200x630 PNG — the photo, a name
+     card, or a topology figure from LoN — and add:
+       <meta property="og:image" content="https://atthin.github.io/og.png">
+       <meta property="og:image:alt" content="...">
+       <meta name="twitter:image" content="https://atthin.github.io/og.png">
+     and switch twitter:card to summary_large_image. -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Atthin Chandrashekar · PhD Student, Computer Architecture, Purdue University">
+<meta name="twitter:description" content="Computer architecture at Purdue: hardware accelerators, interconnection networks, and the tooling used to evaluate architectural ideas.">
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<link rel="preload" href="fonts/newsreader-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+
+<!-- Set before first paint so scroll-reveal starts hidden instead of flashing in.
+     Deferred main.js runs after paint, which would cause a visible flicker. -->
+<script>document.documentElement.classList.add('js')</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Atthin Chandrashekar",
+  "givenName": "Atthin",
+  "familyName": "Chandrashekar",
+  "url": "https://atthin.github.io/",
+  "email": "mailto:chand158@purdue.edu",
+  "jobTitle": "PhD Student",
+  "description": "PhD student in Electrical & Computer Engineering at Purdue University working on computer architecture: hardware accelerators, interconnection networks, and ML systems.",
+  "affiliation": {
+    "@type": "CollegeOrUniversity",
+    "name": "Purdue University",
+    "department": {
+      "@type": "Organization",
+      "name": "Elmore Family School of Electrical and Computer Engineering"
+    }
+  },
+  "alumniOf": {
+    "@type": "CollegeOrUniversity",
+    "name": "Purdue University"
+  },
+  "knowsAbout": [
+    "Computer Architecture",
+    "Hardware Accelerators",
+    "Interconnection Networks",
+    "ML Systems",
+    "Simulation and Modeling"
+  ],
+  "knows": [
+    { "@type": "Person", "name": "Mithuna Thottethodi", "jobTitle": "Doctoral advisor" },
+    { "@type": "Person", "name": "T. N. Vijaykumar", "jobTitle": "Doctoral advisor" }
+  ],
+  "sameAs": [
+    "https://github.com/Atthin",
+    "https://www.linkedin.com/in/atthin/"
+  ]
+}
+</script>
+<!-- NOTE (OPEN QUESTION #16): schema.org has no doctoral-advisor property. The two
+     advisors are expressed as `knows` with jobTitle "Doctoral advisor", which is the
+     closest standard vocabulary. Google Scholar URL is absent from `sameAs` pending
+     TODO #1. -->
+</head>
+
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="progress" aria-hidden="true"><span class="progress-bar"></span></div>
+
+<!-- Sticky section nav: hidden until the hero scrolls out (see main.js).
+     Anchors cover IA sections 2-7; the hero itself is not a nav target. -->
+<nav class="nav" id="nav" aria-label="Sections" data-state="hidden">
+  <div class="nav-inner">
+    <ul class="nav-list" id="nav-list">
+      <li><a href="#about">About</a></li>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#teaching">Teaching</a></li>
+      <li><a href="#service">Service</a></li>
+      <li><a href="#experience">Industry</a></li>
+      <li><a href="#education">Education</a></li>
+      <li class="nav-dot" aria-hidden="true"></li>
+    </ul>
+  </div>
+</nav>
+
+<button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+  <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <circle cx="12" cy="12" r="4.2"/>
+    <g stroke-linecap="round">
+      <path d="M12 2.6v2.4M12 19v2.4M2.6 12h2.4M19 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M18.7 5.3L17 7M7 17l-1.7 1.7"/>
+    </g>
+  </svg>
+  <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M20.5 14.6A8.6 8.6 0 1 1 9.4 3.5a7 7 0 0 0 11.1 11.1z"/>
+  </svg>
+</button>
+
+<!-- ============================ 1. HERO ============================
+     Positioning + contact only. Deliberately not a dark slab: it sits on the page
+     background, with the topology field as its only ornament. -->
+<header class="hero">
+  <!-- Decorative interconnection-network field. Built by main.js so the layout can
+       be jittered deterministically; absent (harmlessly) with JS disabled. -->
+  <svg class="topo" id="topo" preserveAspectRatio="xMidYMid slice"
+       aria-hidden="true" focusable="false"></svg>
+
+  <div class="hero-inner">
+    <h1 class="hero-name">Atthin Chandrashekar</h1>
+    <div class="hero-meta">
+      <p class="hero-line">PhD Student <span class="sep">·</span> Electrical &amp; Computer Engineering <span class="sep">·</span> Purdue University</p>
+      <p class="hero-advisors">Advised by Mithuna Thottethodi and T. N. Vijaykumar</p>
+
+      <ul class="hero-links">
+        <li>
+          <button class="hlink hlink-btn" id="copy-email" type="button"
+                  data-email="chand158@purdue.edu"
+                  aria-label="Copy email address chand158@purdue.edu to clipboard">
+            <span class="hlink-ico">
+              <svg class="ico-mail" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <rect x="2.6" y="4.8" width="18.8" height="14.4" rx="2.2"/>
+                <path d="M3.4 6.6 12 12.9l8.6-6.3"/>
+              </svg>
+              <svg class="ico-check" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4.5 12.5l4.8 4.8L19.5 7"/>
+              </svg>
+            </span>
+            <span class="hlink-label">Email</span>
+          </button>
+        </li>
+        <li>
+          <a class="hlink" href="https://github.com/Atthin" target="_blank" rel="noopener noreferrer">
+            <span class="hlink-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="ico-fill"><path d="M12 .5C5.73.5.75 5.6.75 12c0 5.15 3.29 9.52 7.86 11.06.57.11.78-.25.78-.56v-2.1c-3.2.71-3.87-1.58-3.87-1.58-.53-1.38-1.29-1.74-1.29-1.74-1.05-.74.08-.73.08-.73 1.16.08 1.77 1.22 1.77 1.22 1.03 1.8 2.7 1.28 3.36.98.1-.76.4-1.28.73-1.57-2.56-.3-5.25-1.31-5.25-5.82 0-1.28.44-2.32 1.16-3.14-.12-.3-.5-1.5.11-3.13 0 0 .95-.31 3.11 1.2a10.5 10.5 0 0 1 2.83-.39c.96 0 1.93.13 2.83.39 2.16-1.51 3.11-1.2 3.11-1.2.61 1.63.23 2.83.11 3.13.72.82 1.16 1.86 1.16 3.14 0 4.52-2.7 5.52-5.27 5.81.41.36.78 1.07.78 2.16v3.2c0 .31.21.67.79.56A11.3 11.3 0 0 0 23.25 12C23.25 5.6 18.27.5 12 .5z"/></svg></span>
+            <span class="hlink-label">GitHub</span>
+          </a>
+        </li>
+        <li>
+          <a class="hlink" href="https://www.linkedin.com/in/atthin/" target="_blank" rel="noopener noreferrer">
+            <span class="hlink-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="ico-fill"><path d="M22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46C23.2 24 24 23.23 24 22.28V1.72C24 .77 23.2 0 22.23 0zM7.12 20.45H3.56V9h3.56v11.45zM5.34 7.43c-1.14 0-2.06-.93-2.06-2.07 0-1.14.92-2.06 2.06-2.06 1.14 0 2.06.92 2.06 2.06 0 1.14-.92 2.07-2.06 2.07zM20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28z"/></svg></span>
+            <span class="hlink-label">LinkedIn</span>
+          </a>
+        </li>
+
+        <!-- TODO #1 (OPEN QUESTION): Google Scholar profile URL not yet supplied.
+             Rendered as a non-interactive placeholder so there is no dead link and no
+             empty keyboard stop. To activate, replace the <span> with:
+               <a class="hlink" href="GOOGLE_SCHOLAR_URL" target="_blank" rel="noopener noreferrer">
+             and add the URL to the JSON-LD `sameAs` array above. -->
+        <li>
+          <span class="hlink is-todo" title="Google Scholar link pending">
+            <span class="hlink-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="ico-fill"><path d="M12 2 1 9l11 7 11-7-11-7zm0 16.1L4.6 13.4v4.2L12 22l7.4-4.4v-4.2L12 18.1z"/></svg></span>
+            <span class="hlink-label">Google Scholar</span>
+            <span class="hlink-tag">soon</span>
+          </span>
+        </li>
+
+        <!-- TODO #2 (OPEN QUESTION): CV PDF not yet supplied. Same placeholder pattern.
+             To activate, drop the file in this repo (a stable path such as
+             cv.pdf keeps external citations working) and replace with:
+               <a class="hlink" href="cv.pdf">…</a> -->
+        <li>
+          <span class="hlink is-todo" title="CV PDF pending">
+            <span class="hlink-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 2.8h7.6L19.2 8v13.2H6z"/><path d="M13.4 2.9V8h5.6"/></svg></span>
+            <span class="hlink-label">CV</span>
+            <span class="hlink-tag">soon</span>
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- photo.jpg is a 400x400 square crop derived from pic_for_webpage.jpeg
+         (652x1106), biased 20% from the top so the face keeps headroom, resized to
+         2x the 176px slot and saved at ~30KB. The source file is left untouched in
+         the repo; regenerate with the snippet recorded in CHANGES.md. -->
+    <img class="hero-photo" src="photo.jpg" width="400" height="400"
+         decoding="async" alt="Atthin Chandrashekar">
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============================ 2. ABOUT ============================ -->
+  <section class="section" id="about" aria-labelledby="about-title">
+    <div class="s-head">
+      <h2 class="s-title" id="about-title">About</h2>
+      <span class="s-line" aria-hidden="true"></span>
+    </div>
+
+    <div class="prose" data-reveal>
+      <p>I'm a second-year PhD student in Electrical and Computer Engineering at Purdue
+      University, advised by Mithuna Thottethodi and T. N. Vijaykumar. I work on
+      computer architecture, with a focus on hardware accelerators and the memory and
+      interconnect systems that feed them.</p>
+
+      <p>Most of what I find interesting sits at the boundary between an ML workload and the
+      machine running it - the point where what the model demands stops matching what
+      the hardware was designed to do. Lately that has meant interconnection network
+      analysis, specialized accelerators, and the tooling the field relies on to evaluate
+      architectural ideas before anyone builds them.</p>
+    </div>
+
+    <!-- Decorative in treatment, not in semantics: these are real research keywords,
+         so they stay in the accessibility tree. Non-interactive by design. -->
+    <ul class="chips" data-reveal>
+      <li>Computer Architecture</li>
+      <li>Hardware Accelerators</li>
+      <li>Interconnection Networks</li>
+      <li>ML Systems</li>
+      <li>Simulation &amp; Modeling</li>
+    </ul>
+  </section>
+
+  <!-- ============================ 3. RESEARCH ============================
+       Moved up from position 3-under-Education. This is the section the page exists
+       for, and it is the only one that gets a raised surface. -->
+  <section class="section" id="research" aria-labelledby="research-title">
+    <div class="s-head">
+      <h2 class="s-title" id="research-title">Research</h2>
+      <span class="s-line" aria-hidden="true"></span>
+    </div>
+
+    <article class="lon" data-reveal>
+      <h3 class="lon-title">Library of Networks <span class="lon-abbr">(LoN)</span></h3>
+      <p class="lon-sub">An online tool and open database for interconnection network design</p>
+
+      <!-- Condensed from the three supplied paragraphs to two, same vocabulary and
+           claims throughout, em dashes removed. The verbatim three-paragraph original
+           is kept at the bottom of this file so it can be restored wholesale.
+           The case study is lifted out of the prose into its own block: it is the
+           most concrete evidence here, and leaving it inline produced a twelve-line
+           wall of text. -->
+      <div class="prose">
+        <p>Interconnection network design has two decades of published topologies behind it
+        and almost no shared infrastructure for evaluating them. Researchers reimplement
+        the same routing, deadlock-avoidance, and collective-scheduling algorithms just
+        to establish baselines, comparisons across papers are rarely apples-to-apples,
+        and analysis errors in one paper propagate into the next.</p>
+
+        <p>Library of Networks pairs a browsable catalog of published on-chip, chiplet, and
+        data center topologies with 27 reusable analysis and synthesis routines, from
+        throughput bounds and deadlock freedom to area and power estimation and
+        cycle-accurate simulation through BookSim 2.0, CNSim, and gem5. Twenty of the
+        twenty-seven have no other public implementation, and the point of collecting
+        them is to make published claims checkable.</p>
+      </div>
+
+      <!-- Placed directly after the project description, before the supporting
+           evidence: on a personal site the reader's first question about a named
+           tool is which parts are yours. -->
+      <div class="contrib">
+        <p class="contrib-label">My contribution</p>
+        <p class="contrib-text">I designed and built the LoN platform end to end: the web
+        frontend for topology upload, search, comparison, and job submission, and the
+        database backend that stores topologies, jobs, and results. I also designed the
+        Docker worker subsystem that dispatches and executes long-running analysis jobs
+        in the cloud. Because the hosted service and the local deployment run the same
+        container, users can reproduce any published result on their own hardware, use
+        private data that should not leave their machine, or supply their own commercial
+        solver licenses.</p>
+      </div>
+
+      <div class="case">
+        <p class="case-label">Case study</p>
+        <p class="case-text">Two interposer topologies from the literature turned out to
+        have identical bisection bandwidth, the field's default proxy for worst-case
+        throughput, contradicting the comparison as published. Maximum concurrent flow,
+        computed in LoN, identified the real difference, and full-system PARSEC
+        simulation confirmed it as an 11% geometric mean speedup.</p>
+      </div>
+
+      <ul class="lon-links">
+        <li><a class="ilink" href="https://libraryofnetworks.com/" target="_blank" rel="noopener noreferrer">Live tool</a></li>
+
+        <!-- TODO #5 (OPEN QUESTION): the LoN source repository URL was not supplied.
+             github.com/Atthin is the personal account, not the project repo, so it is
+             deliberately NOT used here. Replace href when known. -->
+        <li><span class="ilink is-todo" title="Repository URL pending">GitHub <span class="hlink-tag">soon</span></span></li>
+
+        <!-- TODO #6 (OPEN QUESTION): paper link pending publication. No venue, status,
+             or "in submission" label is rendered anywhere, per instruction. -->
+        <li><span class="ilink is-todo" title="Paper link pending">Paper <span class="hlink-tag">soon</span></span></li>
+      </ul>
+    </article>
+
+    <!-- REMOVED per instruction: the Accel-Sim entry. Preserved verbatim so it can be
+         restored by uncommenting and re-styling as a second .lon or a lighter row.
+         Note its old description ("Making GPU simulation sane.") carried the second of
+         the page's two jokes; restoring it as-is reintroduces that.
+    <article class="lon">
+      <h3 class="lon-title">Accel-Sim</h3>
+      <p class="lon-sub">Making GPU simulation sane.</p>
+      <p class="meta">Ongoing</p>
+    </article>
+    -->
+  </section>
+
+  <!-- ============================ 4. TEACHING ============================
+       Compressed from ~40% of page height to a hairline grid. Row rules only. -->
+  <section class="section" id="teaching" aria-labelledby="teaching-title">
+    <div class="s-head">
+      <h2 class="s-title" id="teaching-title">Teaching</h2>
+      <span class="s-line" aria-hidden="true"></span>
+    </div>
+
+    <!-- Grouped by appointment rather than listed flat. Two reasons: graduate and
+         undergraduate TA-ships are different credentials to an academic reader, and
+         splitting ECE 43700's six terms across its two roles keeps every title on
+         one line instead of one row wrapping while the others don't. -->
+    <div class="group" data-reveal>
+      <h3 class="group-label">Graduate TA</h3>
+      <ul class="rows rows--courses">
+        <li class="row">
+          <span class="row-code">ECE 43700</span>
+          <span class="row-name">Computer Architecture</span>
+          <span class="row-meta">Fall 2025, Spring 2026, Fall 2026</span>
+        </li>
+        <li class="row">
+          <span class="row-code">ECE 27000</span>
+          <span class="row-name">Introduction to Digital System Design</span>
+          <span class="row-meta">Summer 2026</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="group" data-reveal>
+      <h3 class="group-label">Undergraduate TA</h3>
+      <ul class="rows rows--courses">
+        <li class="row">
+          <span class="row-code">ECE 43700</span>
+          <span class="row-name">Computer Architecture</span>
+          <span class="row-meta">Fall 2024</span>
+        </li>
+        <li class="row">
+          <span class="row-code">ECE 33700</span>
+          <span class="row-name">ASIC Design</span>
+          <span class="row-meta">Spring 2024</span>
+        </li>
+        <li class="row">
+          <span class="row-code">ECE 20875</span>
+          <span class="row-name">Python for Data Science</span>
+          <span class="row-meta">Fall 2023</span>
+        </li>
+        <li class="row">
+          <span class="row-code">ECE 20001</span>
+          <span class="row-name">EE Fundamentals I</span>
+          <span class="row-meta">Spring 2023</span>
+        </li>
+        <li class="row">
+          <span class="row-code">ENGR 13200</span>
+          <span class="row-name">MATLAB</span>
+          <span class="row-meta">Spring 2022</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================ 5. SERVICE ============================ -->
+  <section class="section" id="service" aria-labelledby="service-title">
+    <div class="s-head">
+      <h2 class="s-title" id="service-title">Service</h2>
+      <span class="s-line" aria-hidden="true"></span>
+    </div>
+
+    <!-- Role named once, venues as sub-points. Scales as more committees are added:
+         one .group per role, venues listed under it. -->
+    <div class="group" data-reveal>
+      <h3 class="svc-role">Artifact Evaluation Committee</h3>
+      <ul class="svc-venues">
+        <li>ISCA 2026</li>
+        <li>MICRO 2026</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ==================== 6. INDUSTRY EXPERIENCE ====================
+       Renamed from "Other Interesting Work". Grouped under one employer heading
+       instead of repeating "Caterpillar" three times. -->
+  <section class="section" id="experience" aria-labelledby="experience-title">
+    <div class="s-head">
+      <h2 class="s-title" id="experience-title">Industry Experience</h2>
+      <span class="s-line" aria-hidden="true"></span>
+    </div>
+
+    <div class="employer" data-reveal>
+      <h3 class="employer-name">Caterpillar</h3>
+
+      <div class="stint">
+        <div class="stint-head">
+          <h4 class="stint-role">Software &amp; Data Engineer Intern <span class="stint-loc">Peoria, IL</span></h4>
+          <span class="row-meta">May 2024 – Aug 2024</span>
+        </div>
+        <p class="stint-desc">Moved CI/CD from Azure DevOps to GitHub Actions, automated integration
+        tests for gen-AI apps, wrote Python/Bash tooling to back up SageMaker notebooks to
+        GitHub, and built a React web/mobile tracker for rental equipment deliveries.</p>
+      </div>
+
+      <div class="stint">
+        <div class="stint-head">
+          <h4 class="stint-role">Software &amp; Data Engineer Intern <span class="stint-loc">Peoria, IL</span></h4>
+          <span class="row-meta">May 2023 – Aug 2023</span>
+        </div>
+        <p class="stint-desc">Wrote SQL checks to catch cross-database mismatches across 100+
+        attributes and shipped a “CAT Inspect” app that generates condition reports in
+        50+ languages.</p>
+      </div>
+
+      <div class="stint">
+        <div class="stint-head">
+          <h4 class="stint-role">Machine Learning Engineer Intern <span class="stint-loc">Chennai, India</span></h4>
+          <span class="row-meta">May 2022 – Aug 2022</span>
+        </div>
+        <!-- Voice: this is the one line that keeps its personality. The page's other
+             joke ("sane") left with the Accel-Sim entry. -->
+        <p class="stint-desc">Used hidden Markov models in Python to make urban GPS/map-matching
+        less cursed, improving accuracy by 40%+ and reducing GPS response times for
+        navigation in messy city environments.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ 7. EDUCATION ============================
+       Moved down and compacted to two hairline rows: lookup information, not a lead. -->
+  <section class="section" id="education" aria-labelledby="education-title">
+    <div class="s-head">
+      <h2 class="s-title" id="education-title">Education</h2>
+      <span class="s-line" aria-hidden="true"></span>
+    </div>
+
+    <ul class="rows rows--edu" data-reveal>
+      <li class="row">
+        <span class="row-name">PhD, Electrical and Computer Engineering
+          <span class="row-note">Purdue University</span></span>
+        <span class="row-meta">Aug 2025 – Present</span>
+      </li>
+      <li class="row">
+        <span class="row-name">BS, Computer Engineering
+          <span class="row-note">Purdue University</span></span>
+        <span class="row-meta">Aug 2021 – May 2025</span>
+      </li>
+    </ul>
+  </section>
+
+</main>
+
+<!-- ============================ 8. FOOTER ============================ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="footer-contact">
+      <a class="ilink" href="mailto:chand158@purdue.edu">chand158@purdue.edu</a>
+      <span class="sep">·</span>
+      Elmore Family School of Electrical and Computer Engineering, Purdue University
+    </p>
+    <p class="footer-meta">
+      <!-- TODO #9 (OPEN QUESTION): hardcoded because there is no build step to stamp it.
+           Update by hand when the page changes, or accept it going stale. -->
+      <span>Last updated August 2026</span>
+      <span class="sep">·</span>
+      <span>© 2026 Atthin Chandrashekar</span>
+    </p>
+  </div>
+</footer>
+
+<span class="sr-only" role="status" aria-live="polite" id="live"></span>
+
+<!-- ============================================================================
+     ARCHIVE: the verbatim three-paragraph Library of Networks copy as originally
+     supplied, before it was condensed to two paragraphs and had its em dashes
+     removed. Kept here so the original wording is never lost.
+
+     P1) Interconnection network design has two decades of published topologies
+     behind it and almost no shared infrastructure for evaluating them. Researchers
+     reimplement the same routing, deadlock-avoidance, and collective-scheduling
+     algorithms just to establish baselines, comparisons across papers are rarely
+     apples-to-apples, and analysis errors in one paper propagate into the next.
+
+     P2) Library of Networks addresses this by pairing a browsable catalog of
+     published on-chip, chiplet, and data center topologies with 27 reusable analysis
+     and synthesis routines: throughput bounds, routing, deadlock freedom, collective
+     communication scheduling, area and power estimation, and cycle-accurate
+     simulation through BookSim 2.0, CNSim, and gem5. An uploaded topology is checked
+     for isomorphism against everything already in the database, characterized
+     automatically, and made available for anyone else to compare against. Twenty of
+     the twenty-seven tools have no other public implementation.
+
+     P3) The point is to make published claims checkable. In one case study, two
+     interposer topologies from the literature were compared on bisection bandwidth
+     [em dash] the field's default proxy for worst-case throughput [em dash] and the
+     metric turned out to be identical for both, contradicting the comparison as
+     published. Maximum concurrent flow, computed in LoN, identified the real
+     difference, and full-system PARSEC simulation confirmed it as an 11% geometric
+     mean speedup.
+     ========================================================================= -->
+
+<script src="main.js" defer></script>
+</body>
+</html>

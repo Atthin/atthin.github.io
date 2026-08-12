@@ -1,0 +1,828 @@
+/* ============================================================================
+   Atthin Chandrashekar — atthin.github.io
+   No build step. Tokens first, then layout, then a single motion block gated on
+   prefers-reduced-motion: no-preference.
+   ========================================================================= */
+
+/* ---------------------------------------------------------------- fonts --- */
+/* Latin subset only, self-hosted. Display face (Newsreader) is preloaded in
+   index.html. All three use font-display: swap. */
+@font-face {
+  font-family: 'Newsreader';
+  src: url('fonts/newsreader-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('fonts/inter-latin.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('fonts/jetbrains-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ---------------------------------------------------------------- tokens --- */
+:root {
+  --font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* light */
+  --bg: #FBFAF8;
+  --surface: #FFFFFF;
+  --text: #1A1A19;
+  --muted: #6B6A66;
+  --hairline: #E5E3DE;
+  --accent: #1B3A6B;
+  --gold: #CFB991;          /* decorative only — never text, never behind text */
+  --accent-soft: rgba(27, 58, 107, 0.08);
+
+  /* Hero topology. Resting opacity is deliberately faint; the cursor lifts
+     whatever it is near out of the background. Highlight is blue in light mode. */
+  --topo-rest: 0.16;      /* ambient level, multiplied by a per-element jitter */
+  --topo-glow: 0.30;      /* proximity boost added as the cursor approaches */
+  --topo-warm: 0.55;      /* edges incident to the hovered router */
+  --topo-near: 0.72;      /* the immediate neighbour routers */
+  --topo-hot: 0.95;       /* the hovered router itself */
+  --topo-link-color: var(--gold);      /* ambient edges */
+  --topo-hot-color: var(--accent);     /* highlight: blue on paper */
+
+  /* spacing scale: 4 8 12 16 24 32 48 64 96 */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px; --s5: 24px;
+  --s6: 32px; --s7: 48px; --s8: 64px; --s9: 96px;
+
+  --measure: 760px;
+  --measure-hero: 1100px;
+  --gutter: 24px;
+  --section-gap: var(--s9);
+
+  /* motion */
+  --fast: 150ms;
+  --base: 250ms;
+  --slow: 500ms;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #101110;
+    --surface: #191A17;
+    --text: #ECEAE4;
+    --muted: #9A978E;
+    --hairline: #2A2B27;
+    --accent: #7FA6E8;
+    --gold: #CFB991;
+    --accent-soft: rgba(127, 166, 232, 0.12);
+    --topo-rest: 0.28;
+    --topo-glow: 0.34;
+    --topo-warm: 0.75;
+    --topo-near: 0.80;
+    --topo-hot: 1;
+    /* Hues swap in dark so the highlight always contrasts with the ambient
+       field: gold on gold resting edges would be invisible. */
+    --topo-link-color: var(--accent);
+    --topo-hot-color: var(--gold);   /* Purdue gold */
+  }
+}
+:root[data-theme='dark'] {
+  --bg: #101110;
+  --surface: #191A17;
+  --text: #ECEAE4;
+  --muted: #9A978E;
+  --hairline: #2A2B27;
+  --accent: #7FA6E8;
+  --gold: #CFB991;
+  --accent-soft: rgba(127, 166, 232, 0.12);
+  --topo-rest: 0.28;
+  --topo-glow: 0.34;
+  --topo-warm: 0.75;
+  --topo-near: 0.80;
+  --topo-hot: 1;
+  /* Hues swap in dark so the highlight always contrasts with the ambient
+     field: gold on gold resting edges would be invisible. */
+  --topo-link-color: var(--accent);
+  --topo-hot-color: var(--gold);   /* Purdue gold */
+}
+
+@media (max-width: 620px) {
+  :root { --section-gap: var(--s8); --gutter: 20px; }
+}
+
+/* ----------------------------------------------------------------- base --- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;   /* belt-and-braces: nothing should overflow, but a stray
+                           long token must never make the whole page slide */
+}
+
+h1, h2, h3, h4 { margin: 0; font-weight: 400; line-height: 1.2; }
+p { margin: 0; }
+ul { margin: 0; padding: 0; list-style: none; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+.sep { color: var(--muted); padding: 0 var(--s1); }
+
+/* metadata: 0.8125rem mono, tracked, muted */
+.row-meta, .chips li, .hlink-tag, .nav-list a, .footer-meta, .contrib-label {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+}
+
+/* --------------------------------------------------------------- a11y ----- */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.skip {
+  position: absolute; left: var(--s5); top: var(--s5);
+  z-index: 100;
+  transform: translateY(-200%);
+  background: var(--surface);
+  color: var(--accent);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  padding: var(--s3) var(--s4);
+  font-size: 0.9375rem;
+  text-decoration: none;
+}
+.skip:focus { transform: none; }
+
+/* ------------------------------------------------------- scroll progress --- */
+.progress {
+  position: fixed; inset: 0 0 auto 0;
+  height: 2px; z-index: 60;
+  background: transparent;
+  pointer-events: none;
+}
+.progress-bar {
+  display: block; height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* ------------------------------------------------------------ sticky nav --- */
+.nav {
+  position: fixed; inset: 2px 0 auto 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  border-bottom: 1px solid var(--hairline);
+}
+@supports (backdrop-filter: blur(8px)) {
+  .nav { backdrop-filter: blur(10px) saturate(1.4); }
+}
+/* visibility (not just transform) so the off-screen links are never tab stops.
+   main.js also sets .inert, but this keeps it correct with JS disabled, where the
+   nav stays hidden permanently. */
+.nav[data-state='hidden'] {
+  transform: translateY(-110%);
+  visibility: hidden;
+  pointer-events: none;
+}
+.nav[data-state='shown'] { transform: translateY(0); visibility: visible; }
+
+.nav-inner {
+  position: relative;
+  /* the content measure, not the wider hero one, so nav labels start on the same
+     left edge as the name, the section titles and the prose */
+  max-width: var(--measure);
+  margin-inline: auto;
+  /* right padding keeps links clear of the fixed theme toggle */
+  padding: 0 calc(var(--gutter) + 52px) 0 var(--gutter);
+}
+/* Narrow screens cannot fit six labels; the list scrolls and this fade makes that
+   discoverable instead of silently cutting the last item off. */
+.nav-inner::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  right: calc(var(--gutter) + 52px);
+  width: 32px;
+  background: linear-gradient(to right, transparent, var(--bg));
+  pointer-events: none;
+  opacity: 0;
+}
+@media (max-width: 700px) {
+  .nav-list { gap: var(--s4); }
+  .nav-list a { font-size: 0.6875rem; }
+  .nav-inner::after { opacity: 1; }
+}
+.nav-list {
+  position: relative;
+  display: flex;
+  gap: var(--s5);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.nav-list::-webkit-scrollbar { display: none; }
+
+.nav-list a {
+  display: block;
+  padding: var(--s4) 0;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+.nav-list a:hover, .nav-list a[aria-current='true'] { color: var(--text); }
+
+/* single element, moved with transform only */
+.nav-dot {
+  position: absolute;
+  bottom: 8px; left: 0;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0;
+}
+.nav-dot[data-active] { opacity: 1; }
+
+/* --------------------------------------------------------- theme toggle --- */
+.theme-toggle {
+  position: fixed; top: 8px; right: var(--gutter);
+  z-index: 70;
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+}
+@supports (backdrop-filter: blur(8px)) {
+  .theme-toggle { backdrop-filter: blur(10px); }
+}
+.theme-toggle:hover { color: var(--text); border-color: var(--muted); }
+.theme-toggle svg {
+  position: absolute;
+  width: 19px; height: 19px;
+  fill: none; stroke: currentColor; stroke-width: 1.6;
+}
+.theme-toggle .icon-moon { opacity: 0; }
+:root[data-theme='dark'] .theme-toggle .icon-sun { opacity: 0; }
+:root[data-theme='dark'] .theme-toggle .icon-moon { opacity: 1; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .theme-toggle .icon-sun { opacity: 0; }
+  :root:not([data-theme='light']) .theme-toggle .icon-moon { opacity: 1; }
+}
+
+/* ------------------------------------------------------------------ hero --- */
+.hero {
+  position: relative;
+  padding: clamp(88px, 13vh, 132px) 0 var(--s9);
+}
+.topo {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  /* No group opacity: each element carries its own, so a highlighted router can be
+     far more opaque than the ambient field. pointer-events stay off — the cursor is
+     tracked on .hero, so hovering the name or a link lights the web up too, and the
+     SVG never intercepts a click. */
+  pointer-events: none;
+
+  /* The web recedes behind the text rather than crossing it. A highlighted strand at
+     full strength running past the name or the link row read as an overlay; this soft
+     ellipse holds it to ~15% there, so it reads as depth instead. main.js sizes the
+     ellipse from the actual text block; the 0% default is a no-op if it never runs. */
+  --mask-x: 50%; --mask-y: 50%; --mask-w: 0%; --mask-h: 0%;
+  -webkit-mask-image: radial-gradient(ellipse var(--mask-w) var(--mask-h)
+      at var(--mask-x) var(--mask-y),
+      rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.3) 60%, #000 100%);
+  mask-image: radial-gradient(ellipse var(--mask-w) var(--mask-h)
+      at var(--mask-x) var(--mask-y),
+      rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.3) 60%, #000 100%);
+}
+
+/* Ambient level = per-element jitter (--j) x (resting + proximity boost). --p is
+   written by main.js on pointer move; both default so the field renders statically
+   if the pointer never moves. */
+.topo .topo-link,
+.topo .topo-node {
+  opacity: calc(var(--j, 1) * (var(--topo-rest) + var(--p, 0) * var(--topo-glow)));
+}
+.topo .topo-link { stroke: var(--topo-link-color); stroke-width: 1; fill: none; }
+.topo .topo-node {
+  fill: var(--accent);
+  /* --dx/--dy are written by main.js: routers drift toward the cursor and settle
+     back when it leaves. In SVG, px on a transform means user units. */
+  transform: translate(var(--dx, 0px), var(--dy, 0px));
+}
+.topo .topo-packet { fill: var(--accent); }
+
+/* Cursor highlight: the hovered router, its incident edges, and its immediate
+   neighbours. Blue in light mode, Purdue gold in dark. */
+.topo .topo-link.is-hot {
+  stroke: var(--topo-hot-color);
+  stroke-width: 1.4;          /* extra weight helps the edges read at a glance */
+  opacity: var(--topo-warm);
+}
+.topo .topo-node.is-near {
+  fill: var(--topo-hot-color);
+  opacity: var(--topo-near);
+}
+.topo .topo-node.is-hot {
+  fill: var(--topo-hot-color);
+  opacity: var(--topo-hot);
+  /* The hovered router grows via its `r` attribute, eased in the same integrator as
+     the pull, so a CSS scale here would fight it. */
+}
+
+/* The hero shares the content column's left edge so the whole page has a single
+   alignment spine. Only the photo is allowed outside it, hanging in the right
+   margin where there is room for it. */
+.hero-inner {
+  position: relative;
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s5);
+}
+.hero-name {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 6vw, 4.5rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+.hero-line { font-size: 1.0625rem; }
+.hero-advisors {
+  color: var(--muted);
+  font-size: 1.0625rem;
+  margin-top: var(--s1);
+}
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3) var(--s5);
+  margin-top: var(--s6);
+}
+
+.hlink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  background: none;
+  border: 0;
+  padding: var(--s1) 0;
+  font-family: inherit;
+  position: relative;
+}
+.hlink-btn { cursor: pointer; }
+.hlink-ico {
+  position: relative;
+  display: grid; place-items: center;
+  width: 17px; height: 17px;
+  color: var(--accent);
+  flex: none;
+}
+.hlink-ico svg {
+  position: absolute;
+  width: 100%; height: 100%;
+  fill: none; stroke: currentColor; stroke-width: 1.7;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.hlink-ico svg.ico-fill { fill: currentColor; stroke: none; }
+.hlink-ico .ico-check { opacity: 0; }
+.hlink-btn[data-copied] .ico-mail { opacity: 0; }
+.hlink-btn[data-copied] .ico-check { opacity: 1; }
+
+/* animated underline lives on a pseudo-element so it never affects layout */
+.hlink::after, .ilink::after, .nav-list a::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.hlink:hover::after, .hlink:focus-visible::after,
+.ilink:hover::after, .ilink:focus-visible::after { transform: scaleX(1); }
+
+.hlink.is-todo, .ilink.is-todo {
+  color: var(--muted);
+  cursor: default;
+}
+.hlink.is-todo .hlink-ico { color: var(--muted); }
+.hlink.is-todo::after, .ilink.is-todo::after { display: none; }
+
+.hlink-tag {
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: 1px 7px;
+  color: var(--muted);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero-photo {
+  width: 112px; height: 112px;
+  border-radius: 8px;
+  border: 1px solid var(--hairline);
+  object-fit: cover;
+  /* photo.jpg is already cropped square; these two keep the framing sane if a
+     differently-proportioned image is dropped in later. */
+  object-position: 50% 20%;
+  flex: none;
+  order: -1;              /* in flow it sits above the name */
+}
+
+/* Once there is room outside the reading column, hang the photo in the right
+   margin. The text then keeps the full measure and the page keeps one left edge. */
+@media (min-width: 1200px) {
+  .hero-photo {
+    position: absolute;
+    order: 0;
+    top: 6px;
+    left: calc(100% + var(--s6));
+    width: 176px; height: 176px;
+  }
+}
+
+/* -------------------------------------------------------------- sections --- */
+.section {
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  margin-top: var(--section-gap);
+}
+.section:first-child { margin-top: 0; }
+
+.s-head { margin-bottom: var(--s5); }
+.s-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+/* hairline under the heading, with a gold cap at its left end */
+.s-line {
+  display: block;
+  position: relative;
+  height: 1px;
+  margin-top: var(--s3);
+  background: var(--hairline);
+  transform-origin: left center;
+}
+.s-line::before {
+  content: '';
+  position: absolute;
+  left: 0; top: -1px;
+  width: 28px; height: 2px;
+  background: var(--gold);
+}
+
+/* ----------------------------------------------------------------- prose --- */
+/* 62ch of the "0" glyph works out to ~80 actual characters per line; 68ch measured
+   at 89, which is past comfortable for continuous reading. */
+.prose { max-width: 62ch; }
+.prose p + p { margin-top: var(--s5); }
+.prose a, .ilink {
+  color: var(--accent);
+  text-decoration: none;
+  position: relative;
+}
+
+/* ----------------------------------------------------------------- chips --- */
+.chips {
+  display: flex; flex-wrap: wrap;
+  gap: var(--s2);
+  margin-top: var(--s6);
+}
+.chips li {
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: 3px 11px;
+  color: var(--muted);
+  background: var(--surface);
+}
+
+/* ------------------------------------------------------------------- LoN --- */
+/* The one entry that gets a real surface, because it is the thing to read. */
+.lon {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  padding: var(--s6);
+}
+@media (max-width: 620px) { .lon { padding: var(--s5); border-radius: 8px; } }
+
+.lon-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: -0.01em;
+}
+.lon-abbr { color: var(--muted); }
+.lon-sub {
+  color: var(--muted);
+  margin: var(--s2) 0 var(--s5);
+  max-width: 60ch;
+}
+.lon .prose { margin-bottom: var(--s5); }
+
+/* Case study: pulled out of the prose so the strongest evidence reads as evidence
+   and the paragraph above it stops being a wall. Quieter than .contrib (hairline,
+   no fill) so the two stacked callouts do not compete. */
+.case {
+  border-left: 1px solid var(--hairline);
+  padding-left: var(--s4);
+  margin-bottom: var(--s5);
+  max-width: 62ch;
+}
+.case-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: var(--s2);
+}
+.case-text { font-size: 1rem; }
+
+/* Authorship statement: the strongest treatment in the card, because "which parts
+   are yours" is the question a named tool raises. Filled + accent rule; the case
+   study below is deliberately quieter so the two do not compete. */
+.contrib {
+  padding: var(--s4) var(--s5);
+  border-left: 2px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 6px 6px 0;
+  margin-bottom: var(--s5);
+  max-width: 62ch;
+}
+.contrib-label {
+  color: var(--accent);
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+  margin-bottom: var(--s2);
+}
+.contrib-text { font-size: 1rem; }
+.is-todo-inline {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.lon-links { display: flex; flex-wrap: wrap; gap: var(--s5); }
+.lon-links .ilink { font-size: 0.9375rem; display: inline-flex; align-items: center; gap: var(--s2); }
+
+/* ---------------------------------------------------------------- groups --- */
+/* Sub-groups within a section: "Graduate TA" / "Undergraduate TA", or one service
+   role with its venues. Label uses the metadata voice so it reads as a category,
+   not as a second-level heading competing with the section title. */
+.group + .group { margin-top: var(--s6); }
+.group-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: var(--s3);
+}
+
+.svc-role { font-size: 1.0625rem; font-weight: 600; }
+/* Venues sit side by side rather than stacked: two items on two lines left the
+   whole section looking half-empty. Stacks again on narrow screens. */
+.svc-venues {
+  margin-top: var(--s2);
+  padding-left: var(--s4);
+  border-left: 1px solid var(--hairline);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s6);
+}
+@media (max-width: 480px) {
+  .svc-venues { flex-direction: column; gap: var(--s2); }
+}
+.svc-venues li {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------------------ rows --- */
+/* Hairline rows, no per-item borders. Used by Teaching, Service, Education. */
+.rows { border-top: 1px solid var(--hairline); }
+.row {
+  display: grid;
+  align-items: baseline;
+  gap: var(--s2) var(--s5);
+  padding: var(--s3) var(--s2);
+  border-bottom: 1px solid var(--hairline);
+}
+.rows--courses .row { grid-template-columns: 6.5em minmax(0, 1fr) auto; }
+.rows--service .row,
+.rows--edu .row { grid-template-columns: minmax(0, 1fr) auto; }
+
+.row-code {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+.row-name { font-weight: 600; font-size: 1.0625rem; }
+.row-note {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+.row-note::before { content: '·'; padding: 0 var(--s2) 0 var(--s1); }
+.row-meta { color: var(--muted); text-align: right; white-space: nowrap; }
+
+@media (max-width: 620px) {
+  /* Two lines per row instead of horizontal scroll. Metadata (course number and
+     terms) pairs up on the first line so the title gets the full width below and
+     stays on one line even when it is long. */
+  .rows--courses .row { grid-template-columns: auto 1fr; row-gap: var(--s1); }
+  .rows--courses .row-code { grid-area: 1 / 1 / 2 / 2; }
+  /* a notch smaller so the six-term list fits one line instead of orphaning "2026" */
+  .rows--courses .row-meta {
+    grid-area: 1 / 2 / 2 / 3;
+    text-align: right;
+    white-space: normal;
+    font-size: 0.75rem;
+  }
+  .rows--courses .row-name { grid-area: 2 / 1 / 3 / 3; }
+  .rows--service .row,
+  .rows--edu .row { grid-template-columns: minmax(0, 1fr); }
+  .rows--service .row-meta,
+  .rows--edu .row-meta { text-align: left; }
+  .row-note { display: block; }
+  .row-note::before { content: none; }
+}
+
+/* -------------------------------------------------------------- employer --- */
+.employer-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  margin-bottom: var(--s4);
+}
+.stint { padding: var(--s5) 0; border-top: 1px solid var(--hairline); }
+.stint:last-child { padding-bottom: 0; }
+.stint-head {
+  display: flex; flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s2) var(--s5);
+  margin-bottom: var(--s2);
+}
+.stint-role { font-size: 1.0625rem; font-weight: 600; }
+.stint-loc {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+.stint-loc::before { content: '·'; padding: 0 var(--s2) 0 var(--s1); }
+.stint-desc { max-width: 68ch; }
+
+/* ---------------------------------------------------------------- footer --- */
+.footer {
+  margin-top: var(--s9);
+  border-top: 1px solid var(--hairline);
+  padding: var(--s7) 0 var(--s8);
+}
+.footer-inner {
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+/* sized so the address and the full department name sit on one line at 760px */
+.footer-contact { font-size: 0.875rem; color: var(--muted); }
+.footer-meta { color: var(--muted); margin-top: var(--s3); }
+
+/* ============================================================================
+   MOTION — everything below is opt-in. Under prefers-reduced-motion: reduce the
+   page renders in its final state with no transitions and no packets.
+   ========================================================================= */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* 2. scroll reveal (gated on .js so it can never hide content without JS) */
+  .js [data-reveal] { opacity: 0; transform: translateY(16px); }
+  .js [data-reveal].is-revealed {
+    opacity: 1; transform: none;
+    transition: opacity var(--slow) var(--ease), transform var(--slow) var(--ease);
+  }
+
+  /* 8. section rules draw left-to-right */
+  .js .s-line { transform: scaleX(0); }
+  .js .s-line.is-drawn {
+    transform: scaleX(1);
+    transition: transform var(--slow) var(--ease);
+  }
+
+  /* 3. sticky nav slide + active dot. Visibility is delayed until the slide-up
+     finishes when hiding, and applied immediately when showing. */
+  .nav { transition: transform 200ms var(--ease), visibility 0s linear 200ms; }
+  .nav[data-state='shown'] { transition: transform 200ms var(--ease), visibility 0s linear 0s; }
+  .nav-dot { transition: transform var(--base) var(--ease), opacity var(--fast) linear; }
+  .progress-bar { transition: transform 90ms linear; }
+
+  /* 4. animated underlines */
+  .hlink::after, .ilink::after {
+    transition: transform var(--base) var(--ease);
+  }
+
+  /* 5. row / surface hover */
+  .row, .lon, .stint {
+    transition: transform 180ms var(--ease), border-color 180ms var(--ease);
+  }
+  .row:hover, .stint:hover { transform: translateY(-2px); border-color: var(--muted); }
+  .lon:hover { transform: translateY(-2px); border-color: var(--muted); }
+
+  /* 6. copy-email icon morph */
+  .hlink-ico svg { transition: opacity 200ms var(--ease), transform 200ms var(--ease); }
+  .hlink-btn[data-copied] .ico-mail { transform: scale(0.6); }
+  .hlink-ico .ico-check { transform: scale(0.6); }
+  .hlink-btn[data-copied] .ico-check { transform: scale(1); }
+
+  /* 7. theme toggle */
+  .theme-toggle svg { transition: opacity var(--base) var(--ease), transform 300ms var(--ease); }
+  :root[data-theme='dark'] .theme-toggle svg,
+  .theme-toggle[data-spun] svg { transform: rotate(180deg); }
+  .theme-toggle { transition: color var(--fast) var(--ease), border-color var(--fast) var(--ease); }
+
+  /* theme cross-fade: enabled only while toggling, so it never fires on load.
+     Only colour properties are listed, so the topology (fill/stroke) is untouched. */
+  .theming, .theming * {
+    transition: background-color 300ms var(--ease),
+                color 300ms var(--ease),
+                border-color 300ms var(--ease) !important;
+  }
+
+  /* 1. topology intro — nodes fade in, links draw. JS sets the per-element delays.
+     The gate is on the <svg>, not inline opacity, so the calc above and the
+     highlight rules stay in control once the intro is done. */
+  .js .topo:not(.is-ready) .topo-node { opacity: 0; }
+  .js .topo.is-ready .topo-node { transition: opacity var(--base) var(--ease); }
+  .js .topo.is-ready .topo-link.is-in { transition: stroke-dashoffset 800ms var(--ease); }
+
+  /* Once the intro has finished, JS clears the stagger delays and adds .is-live, so
+     the cursor highlight responds immediately rather than inheriting them. */
+  .js .topo.is-live .topo-node,
+  .js .topo.is-live .topo-link {
+    /* Colour only. transform and r are integrated frame by frame in main.js; a CSS
+       transition over them would lag the circles behind their own edges. */
+    transition: opacity 170ms linear, fill 170ms linear, stroke 170ms linear;
+  }
+}
+
+/* Under reduce, the topology still renders — it just arrives finished. */
+@media (prefers-reduced-motion: reduce) {
+  .topo-link { stroke-dashoffset: 0 !important; }
+}
+
+/* ----------------------------------------------------------------- print --- */
+@media print {
+  .nav, .theme-toggle, .progress, .topo, .skip { display: none !important; }
+  body { background: #fff; color: #000; font-size: 11pt; }
+  .lon { border: 1px solid #ccc; }
+  .section { margin-top: 24pt; max-width: none; }
+  a { color: #000; }
+}
