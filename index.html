@@ -76,14 +76,14 @@
   ],
   "sameAs": [
     "https://github.com/Atthin",
-    "https://www.linkedin.com/in/atthin/"
+    "https://www.linkedin.com/in/atthin/",
+    "https://scholar.google.com/citations?hl=en&user=FCD0yw8AAAAJ"
   ]
 }
 </script>
-<!-- NOTE (OPEN QUESTION #16): schema.org has no doctoral-advisor property. The two
-     advisors are expressed as `knows` with jobTitle "Doctoral advisor", which is the
-     closest standard vocabulary. Google Scholar URL is absent from `sameAs` pending
-     TODO #1. -->
+<!-- NOTE: schema.org has no doctoral-advisor property. The two advisors are
+     expressed as `knows` with jobTitle "Doctoral advisor", the closest standard
+     vocabulary. -->
 </head>
 
 <body>
@@ -170,17 +170,11 @@
           </a>
         </li>
 
-        <!-- TODO #1 (OPEN QUESTION): Google Scholar profile URL not yet supplied.
-             Rendered as a non-interactive placeholder so there is no dead link and no
-             empty keyboard stop. To activate, replace the <span> with:
-               <a class="hlink" href="GOOGLE_SCHOLAR_URL" target="_blank" rel="noopener noreferrer">
-             and add the URL to the JSON-LD `sameAs` array above. -->
         <li>
-          <span class="hlink is-todo" title="Google Scholar link pending">
+          <a class="hlink" href="https://scholar.google.com/citations?hl=en&amp;user=FCD0yw8AAAAJ" target="_blank" rel="noopener noreferrer">
             <span class="hlink-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="ico-fill"><path d="M12 2 1 9l11 7 11-7-11-7zm0 16.1L4.6 13.4v4.2L12 22l7.4-4.4v-4.2L12 18.1z"/></svg></span>
             <span class="hlink-label">Google Scholar</span>
-            <span class="hlink-tag">soon</span>
-          </span>
+          </a>
         </li>
 
         <!-- TODO #2 (OPEN QUESTION): CV PDF not yet supplied. Same placeholder pattern.
